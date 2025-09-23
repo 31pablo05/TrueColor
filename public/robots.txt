@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://truecolor.vercel.app/sitemap.xml
+Host: https://truecolor.vercel.app/

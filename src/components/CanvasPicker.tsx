@@ -1,80 +1,137 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 
 interface CanvasPickerProps {
   image: HTMLImageElement | null;
   onColorPick: (rgb: { r: number; g: number; b: number }) => void;
 }
 
+
 const CanvasPicker: React.FC<CanvasPickerProps> = ({ image, onColorPick }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [crosshair, setCrosshair] = useState<{ x: number; y: number } | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // nuevo: refs para manejo táctil
+  const pointerTypeRef = useRef<string | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const isTouchDraggingRef = useRef(false);
+  const TOUCH_MOVE_THRESHOLD = 10; // px
+
+  // UI state
+  const [zoom, setZoom] = useState<number>(1);
   const [hoverColor, setHoverColor] = useState<string | null>(null);
-  const [zoom, setZoom] = useState(1);
+  const [crosshair, setCrosshair] = useState<{ x: number; y: number } | null>(null);
+
+  // función para obtener coordenadas relativas del evento (en coordenadas del canvas interno)
+  const getCanvasPos = useCallback((clientX: number, clientY: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(canvas.width - 1, Math.round((clientX - rect.left) * (canvas.width / rect.width)))),
+      y: Math.max(0, Math.min(canvas.height - 1, Math.round((clientY - rect.top) * (canvas.height / rect.height))))
+    };
+  }, []);
+
+  // lee color del canvas en coordenadas internas
+  const readPixel = useCallback((x: number, y: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    try {
+      const data = ctx.getImageData(x, y, 1, 1).data;
+      return { r: data[0], g: data[1], b: data[2], a: data[3] };
+    } catch (err) {
+      // some browsers may throw if canvas is tainted
+      return null;
+    }
+  }, []);
+
+  // handlers pointer para compatibilidad touch/mouse
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // importante para recibir coordenadas precisas en touch
+    canvas.style.touchAction = 'none';
+
+    const onPointerDown = (e: PointerEvent) => {
+      pointerTypeRef.current = e.pointerType || null;
+      if (e.pointerType === 'touch') {
+        const rect = canvas.getBoundingClientRect();
+        touchStartRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        isTouchDraggingRef.current = false;
+        try { (e.target as Element).setPointerCapture?.(e.pointerId); } catch { /* no-op */ }
+      }
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (pointerTypeRef.current === 'touch') {
+        const rect = canvas.getBoundingClientRect();
+        const dx = Math.abs((e.clientX - rect.left) - touchStartRef.current.x);
+        const dy = Math.abs((e.clientY - rect.top) - touchStartRef.current.y);
+        if (dx > TOUCH_MOVE_THRESHOLD || dy > TOUCH_MOVE_THRESHOLD) {
+          isTouchDraggingRef.current = true; // es un gesto/scroll/drag, no seleccionar al soltar
+        }
+        return; // no seleccionar durante move en touch
+      }
+      // for mouse, update hover preview
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      setCrosshair({ x: offsetX, y: offsetY });
+      const pos = getCanvasPos(e.clientX, e.clientY);
+      const px = readPixel(pos.x, pos.y);
+      if (px) setHoverColor(`rgb(${px.r}, ${px.g}, ${px.b})`);
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+      const wasTouch = pointerTypeRef.current === 'touch';
+      try { (e.target as Element).releasePointerCapture?.(e.pointerId); } catch { /* no-op */ }
+
+      if (wasTouch) {
+        // si fue un tap (no se arrastró), realizamos pick
+        if (!isTouchDraggingRef.current) {
+          const pos = getCanvasPos(e.clientX, e.clientY);
+          const px = readPixel(pos.x, pos.y);
+          if (px) onColorPick?.({ r: px.r, g: px.g, b: px.b });
+        }
+      } else {
+        // mouse/pen: pick on release (click)
+        const pos = getCanvasPos(e.clientX, e.clientY);
+        const px = readPixel(pos.x, pos.y);
+        if (px) onColorPick?.({ r: px.r, g: px.g, b: px.b });
+      }
+
+      // reset
+      pointerTypeRef.current = null;
+      isTouchDraggingRef.current = false;
+    };
+
+    canvas.addEventListener('pointerdown', onPointerDown as EventListener);
+    window.addEventListener('pointermove', onPointerMove as EventListener, { passive: true });
+    window.addEventListener('pointerup', onPointerUp as EventListener);
+
+    return () => {
+      canvas.removeEventListener('pointerdown', onPointerDown as EventListener);
+      window.removeEventListener('pointermove', onPointerMove as EventListener);
+      window.removeEventListener('pointerup', onPointerUp as EventListener);
+      canvas.style.touchAction = ''; // restore
+    };
+  }, [getCanvasPos, readPixel, onColorPick]);
 
   useEffect(() => {
     if (image && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
         const maxWidth = 800;
-        const scale = Math.min(maxWidth / image.width, maxWidth / image.height, 1) * zoom;
-        canvasRef.current.width = image.width * scale;
-        canvasRef.current.height = image.height * scale;
+        const scale = Math.min(maxWidth / image.width, maxWidth / image.height, 1);
+        canvasRef.current.width = Math.round(image.width * scale);
+        canvasRef.current.height = Math.round(image.height * scale);
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctx.drawImage(image, 0, 0, canvasRef.current.width, canvasRef.current.height);
       }
     }
-  }, [image, zoom]);
-
-  const handlePick = (e: React.MouseEvent | React.TouchEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const rect = canvas.getBoundingClientRect();
-    let x = 0, y = 0;
-    
-    if ('touches' in e) {
-      x = e.touches[0].clientX - rect.left;
-      y = e.touches[0].clientY - rect.top;
-    } else {
-      x = (e as React.MouseEvent).clientX - rect.left;
-      y = (e as React.MouseEvent).clientY - rect.top;
-    }
-
-    // Adjust for device pixel ratio
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    x *= scaleX;
-    y *= scaleY;
-
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      const data = ctx.getImageData(x, y, 1, 1).data;
-      onColorPick({ r: data[0], g: data[1], b: data[2] });
-      setCrosshair({ x: x / scaleX, y: y / scaleY });
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setCrosshair({ x, y });
-    // Preview color en hover
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      const data = ctx.getImageData(x * scaleX, y * scaleY, 1, 1).data;
-      setHoverColor(`rgb(${data[0]}, ${data[1]}, ${data[2]})`);
-    }
-  };
-
-  const handleMouseLeave = () => {
-  setCrosshair(null);
-  setHoverColor(null);
-  };
+  }, [image]);
 
   if (!image) {
     return (
@@ -89,6 +146,42 @@ const CanvasPicker: React.FC<CanvasPickerProps> = ({ image, onColorPick }) => {
       </div>
     );
   }
+
+  // event handlers for mouse hover and click (used alongside pointer events)
+  const handlePick = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    let clientX = 0;
+    let clientY = 0;
+    if ('touches' in e && e.touches && e.touches.length) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if ('clientX' in e) {
+      // MouseEvent
+      clientX = (e as React.MouseEvent).clientX;
+      clientY = (e as React.MouseEvent).clientY;
+    }
+    const pos = getCanvasPos(clientX, clientY);
+    const px = readPixel(pos.x, pos.y);
+    if (px) onColorPick?.({ r: px.r, g: px.g, b: px.b });
+  }, [getCanvasPos, onColorPick, readPixel]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    setCrosshair({ x: offsetX, y: offsetY });
+    const pos = getCanvasPos(e.clientX, e.clientY);
+    const px = readPixel(pos.x, pos.y);
+    if (px) setHoverColor(`rgb(${px.r}, ${px.g}, ${px.b})`);
+  }, [getCanvasPos, readPixel]);
+
+  const handleMouseLeave = useCallback(() => {
+    setHoverColor(null);
+    setCrosshair(null);
+  }, []);
 
   return (
   <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-xl border border-gray-100 animate-slide-up">
