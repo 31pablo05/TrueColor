@@ -349,7 +349,14 @@ const App: React.FC = () => {
           {/* Hero Section mejorado */}
           {!image && (
             <div className="text-center py-12 animate-fade-in">
-              <div className="text-8xl mb-6 animate-float">🎨</div>
+              <div className="mb-6">
+                <div className="hero-logo mx-auto animate-hero-shine">
+  <img src="/mascota/mascotaHongo.svg" alt="Mascota TrueColor" className="hero-logo-img" />
+  <div className="orbital-particle"></div>
+  <div className="orbital-particle"></div>
+  <div className="orbital-particle"></div>
+</div>
+              </div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
                 Extractor de Colores Inteligente
               </h1>
