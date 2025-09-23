@@ -54,7 +54,7 @@ const PaletteManager: React.FC<PaletteManagerProps> = ({ currentColors = [] }) =
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-gray-100 animate-slide-up">
+  <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-gray-100 animate-slide-up">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2 justify-center">
           <span>🎨 Gestor de Paletas</span>
