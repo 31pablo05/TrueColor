@@ -4,10 +4,11 @@ interface ColorPanelProps {
   hex: string;
   rgb: string;
   hsl: string;
-  onCopy: (value: string) => void;
+  onCopy: (value: string) => Promise<void>;
+  previousColor?: string;
 }
 
-const ColorPanel: React.FC<ColorPanelProps> = ({ hex, rgb, hsl, onCopy }) => {
+const ColorPanel: React.FC<ColorPanelProps> = ({ hex, rgb, hsl, onCopy, previousColor }) => {
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [favorite, setFavorite] = useState(false);
@@ -69,6 +70,12 @@ const ColorPanel: React.FC<ColorPanelProps> = ({ hex, rgb, hsl, onCopy }) => {
             className="w-28 h-28 rounded-2xl shadow-2xl border-4 border-white/80 animate-fade-in"
             style={{ background: hex }}
           />
+          {previousColor && (
+            <div className="absolute -top-3 -left-6 flex flex-col items-center text-xs text-gray-700">
+              <div className="w-8 h-8 rounded-full border border-white shadow-sm" style={{ background: previousColor }} title={`Anterior: ${previousColor}`} />
+              <span className="mt-1 hidden sm:block">Anterior</span>
+            </div>
+          )}
           <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-white/80 rounded-full shadow-lg flex items-center justify-center border-2 border-gray-200">
             <div 
               className="w-6 h-6 rounded-full border border-gray-200"

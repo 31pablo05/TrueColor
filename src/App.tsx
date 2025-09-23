@@ -26,6 +26,7 @@ const App: React.FC = () => {
   // Estados principales
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [showTip, setShowTip] = useState(true);
+  const [showMascotHelper, setShowMascotHelper] = useState(false);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [color, setColor] = useState<ColorState | null>(null);
   const [previousColor, setPreviousColor] = useState<ColorState | null>(null);
@@ -53,7 +54,9 @@ const App: React.FC = () => {
     if (showTip && !image) {
       const timer = setTimeout(() => {
         setShowTip(false);
-      }, 5000);
+        // Mostrar ayudante de la mascota después
+        setTimeout(() => setShowMascotHelper(true), 2000);
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [showTip, image]);
@@ -62,6 +65,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (image) {
       setShowTip(false);
+      setShowMascotHelper(false);
     }
   }, [image]);
 
@@ -76,6 +80,7 @@ const App: React.FC = () => {
   const handleImageLoad = useCallback((img: HTMLImageElement) => {
     setImage(img);
     showNotification('¡Imagen cargada! Haz clic en cualquier parte para extraer colores.', 'success');
+    setShowMascotHelper(false);
   }, [showNotification]);
 
   const handleColorPick = useCallback((rgb: ColorState) => {
@@ -205,6 +210,64 @@ const App: React.FC = () => {
         ))}
       </div>
 
+      {/* Mascota Helper Flotante Mejorada */}
+      {showMascotHelper && (
+        <div className="mascot-helper">
+          <div className="mascot-helper-container">
+            <button
+              className="mascot-helper-close"
+              onClick={() => setShowMascotHelper(false)}
+              aria-label="Cerrar ayudante"
+            >
+              ×
+            </button>
+            
+            <div className="mascot-helper-avatar">
+              <img
+                src="/mascota/mascotaHongo.svg"
+                alt="TrueColor Assistant"
+                className="mascot-helper-image"
+              />
+              <div className="mascot-helper-glow"></div>
+            </div>
+            
+            <div className="mascot-helper-content">
+              <div className="mascot-helper-bubble">
+                <h4 className="mascot-helper-title">¡Hola! Soy tu asistente</h4>
+                <p className="mascot-helper-text">
+                  🎨 Sube una imagen y haz clic para extraer colores perfectos
+                </p>
+                <div className="mascot-helper-features">
+                  <span className="feature-tag">⚡ Instantáneo</span>
+                  <span className="feature-tag">🎯 Preciso</span>
+                  <span className="feature-tag">💾 Historial</span>
+                </div>
+              </div>
+              
+              <div className="mascot-helper-actions">
+                <button
+                  className="mascot-helper-button primary"
+                  onClick={() => {
+                    setShowMascotHelper(false);
+                    // Scroll to upload section
+                    const uploadSection = document.querySelector('[data-upload-section]');
+                    uploadSection?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  ¡Comenzar!
+                </button>
+                <button
+                  className="mascot-helper-button secondary"
+                  onClick={() => setShowMascotHelper(false)}
+                >
+                  Más tarde
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Notificaciones mejoradas */}
       {notification.show && (
         <div className="fixed top-20 right-4 z-50 animate-slide-in-right">
@@ -225,41 +288,56 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Tip mejorado */}
+      {/* Tip inicial mejorado y responsive */}
       {showTip && (
-        <div className="fixed left-1/2 bottom-24 z-40 -translate-x-1/2 animate-bounce-gentle">
-          <div className="bg-white/90 dark:bg-gray-800/90 rounded-3xl shadow-2xl px-6 py-4 flex items-center gap-4 border-2 border-pink-200 dark:border-pink-600 backdrop-blur-xl">
-            {/* Mascota SVG mejorada */}
-            <div className="animate-pulse-gentle">
-              <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="16" cy="14" rx="12" ry="8" fill="url(#paint0_radial)" />
-                <ellipse cx="16" cy="24" rx="7" ry="4" fill={theme === 'dark' ? '#4a5568' : '#ffffff'} />
-                <circle cx="11" cy="13" r="2" fill="#ff6b6b" className="animate-twinkle" />
-                <circle cx="21" cy="15" r="2" fill="#48dbfb" className="animate-twinkle" style={{ animationDelay: '0.5s' }} />
-                <circle cx="16" cy="10" r="2" fill="#feca57" className="animate-twinkle" style={{ animationDelay: '1s' }} />
-                <defs>
-                  <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientTransform="translate(16 14) scale(12 8)" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#ff6b6b" />
-                    <stop offset="0.5" stopColor="#48dbfb" />
-                    <stop offset="1" stopColor="#5f27cd" />
-                  </radialGradient>
-                </defs>
-              </svg>
-            </div>
-            <div>
-              <p className="text-base font-semibold text-gray-700 dark:text-gray-200">
-                💡 Sube una imagen y haz clic para extraer colores
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                ¡Descubre la paleta perfecta!
-              </p>
-            </div>
+        <div className="tip-container">
+          <div className="tip-card">
             <button
               onClick={() => setShowTip(false)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 ml-2 transition-colors"
+              className="tip-close"
+              aria-label="Cerrar tip"
             >
-              ✕
+              ×
             </button>
+            
+            <div className="tip-avatar">
+              <img
+                src="/mascota/mascotaHongo.svg"
+                alt="Mascota TrueColor"
+                className="tip-mascot-image"
+              />
+              <div className="tip-mascot-pulse"></div>
+            </div>
+            
+            <div className="tip-content">
+              <div className="tip-emoji">💡</div>
+              <h3 className="tip-title">¡Bienvenido a TrueColor!</h3>
+              <p className="tip-description">
+                Sube una imagen y haz clic en cualquier píxel para extraer sus colores perfectos
+              </p>
+              
+              <div className="tip-features">
+                <div className="tip-feature">
+                  <span className="tip-feature-icon">🎯</span>
+                  <span className="tip-feature-text">Precisión perfecta</span>
+                </div>
+                <div className="tip-feature">
+                  <span className="tip-feature-icon">⚡</span>
+                  <span className="tip-feature-text">Extracción instantánea</span>
+                </div>
+                <div className="tip-feature">
+                  <span className="tip-feature-icon">🎪</span>
+                  <span className="tip-feature-text">Historial inteligente</span>
+                </div>
+              </div>
+              
+              <button
+                className="tip-action-button"
+                onClick={() => setShowTip(false)}
+              >
+                ¡Entendido!
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -275,13 +353,13 @@ const App: React.FC = () => {
               <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
                 Extractor de Colores Inteligente
               </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl text-white-600 dark:text-white-300 max-w-3xl mx-auto leading-relaxed">
                 Sube una imagen, haz clic en cualquier píxel y obtén instantáneamente 
                 los valores <span className="font-semibold text-purple-600">HEX</span>, 
                 <span className="font-semibold text-pink-600"> RGB</span> y 
                 <span className="font-semibold text-blue-600"> HSL</span> del color.
               </p>
-              <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm text-black dark:text-gray-200">
                 <div className="flex items-center gap-2">
                   <span>🎯</span> Precisión perfecta
                 </div>
@@ -302,7 +380,7 @@ const App: React.FC = () => {
             
             {/* Sección de upload y panel de color */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              <div className="order-2 lg:order-1">
+              <div className="order-2 lg:order-1" data-upload-section>
                 <Upload onImageLoad={handleImageLoad} />
               </div>
               
