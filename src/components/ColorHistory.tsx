@@ -69,6 +69,15 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({ colors, onSelect }) => {
               >
                 {favorites.includes(color) ? '★' : '☆'}
               </button>
+              {/* Borrar color individual */}
+              <button
+                className="absolute top-1 right-1 w-7 h-7 rounded-full border-2 border-red-400 bg-white shadow flex items-center justify-center text-xl transition-all duration-200 hover:bg-red-100 z-10"
+                onClick={() => onSelect(`delete-${idx}`)}
+                title="Eliminar color"
+                aria-label="Eliminar color"
+              >
+                🗑️
+              </button>
             </div>
           ))}
         </div>

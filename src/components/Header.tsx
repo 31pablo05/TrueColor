@@ -1,22 +1,33 @@
 import React from 'react';
 
 const Header: React.FC = () => (
-  <header className="w-full py-8 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white shadow-2xl backdrop-blur-xl">
-    <div className="max-w-6xl mx-auto px-4">
-      <div className="flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center gap-3 mb-2 animate-fade-in">
-          <span className="text-5xl animate-bounce drop-shadow-xl" aria-label="Paleta de color">🎨</span>
-          <span className="text-4xl font-extrabold tracking-wide animate-gradient-x bg-gradient-to-r from-blue-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
-            True Color
-          </span>
-        </div>
-        <p className="text-blue-100 text-lg font-light text-center animate-fade-in">
-          Extrae colores perfectos de cualquier imagen
-        </p>
-        <div className="mt-2 flex gap-4 animate-fade-in">
-          <a href="#main" className="px-3 py-1 rounded-lg bg-white/20 text-blue-100 hover:bg-white/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Ir al contenido principal">Ir al contenido</a>
-        </div>
+  <header className="w-full py-10 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white shadow-2xl backdrop-blur-xl animate-fade-in">
+  <div className="max-w-4xl mx-auto px-4 flex flex-col items-center justify-center">
+      {/* Logo centrado grande */}
+      <div className="flex flex-col items-center justify-center mb-4 animate-slide-up">
+        <img src="/svg logo/4.svg" alt="Logo TrueColor" className="h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 mb-2 animate-bounce drop-shadow-2xl transition-all duration-300" />
       </div>
+      {/* Botón de tema claro/oscuro alineado a la derecha y más pequeño */}
+  <div className="absolute top-4 right-4 sm:top-8 sm:right-8 flex gap-2 animate-fade-in">
+        <button
+          className={`rounded-full p-2 text-lg hover:bg-gray-200 transition-colors duration-200 bg-white/80 shadow-lg`}
+          title="Tema claro"
+          onClick={() => window.dispatchEvent(new CustomEvent('setTheme', { detail: 'light' }))}
+        >
+          🌞
+        </button>
+        <button
+          className={`rounded-full p-2 text-lg text-yellow-300 hover:bg-gray-800 transition-colors duration-200 bg-gray-900/80 shadow-lg`}
+          title="Tema oscuro"
+          onClick={() => window.dispatchEvent(new CustomEvent('setTheme', { detail: 'dark' }))}
+        >
+          🌙
+        </button>
+      </div>
+      <p className="text-blue-100 text-base sm:text-lg font-light text-center animate-fade-in mb-2">
+        Extrae colores perfectos de cualquier imagen
+      </p>
+      {/* Botón 'Ir al contenido' eliminado */}
     </div>
   </header>
 );

@@ -11,6 +11,15 @@ import useLocalStorage from './hooks/useLocalStorage';
 import './App.css';
 
 const App: React.FC = () => {
+  React.useEffect(() => {
+    const handler = (e: any) => {
+      if (e.detail === 'light' || e.detail === 'dark') {
+        setTheme(e.detail);
+      }
+    };
+    window.addEventListener('setTheme', handler);
+    return () => window.removeEventListener('setTheme', handler);
+  }, []);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [showTip, setShowTip] = useState(true);
   // Tip flotante automático
@@ -35,6 +44,18 @@ const App: React.FC = () => {
   };
 
   const handleHistorySelect = (hex: string) => {
+    if (hex === 'clear-history') {
+      setHistory([]);
+      setColor(null);
+      return;
+    }
+    if (hex.startsWith('delete-')) {
+      const idx = parseInt(hex.replace('delete-', ''), 10);
+      if (!isNaN(idx)) {
+        setHistory(history.filter((_, i) => i !== idx));
+      }
+      return;
+    }
     const rgb = hexToRgb(hex);
     if (rgb) setColor(rgb);
   };
@@ -101,22 +122,7 @@ const App: React.FC = () => {
         </div>
       )}
       {/* Botón de tema oscuro/día funcional */}
-      <div className="fixed top-8 right-8 z-50 flex gap-2">
-        <button
-          className={`bg-white/80 rounded-full shadow-lg p-2 text-xl hover:bg-gray-200 transition-colors duration-200 ${theme === 'light' ? 'ring-2 ring-blue-400' : ''}`}
-          title="Tema claro"
-          onClick={() => setTheme('light')}
-        >
-          🌞
-        </button>
-        <button
-          className={`bg-gray-900/80 rounded-full shadow-lg p-2 text-xl text-yellow-300 hover:bg-gray-800 transition-colors duration-200 ${theme === 'dark' ? 'ring-2 ring-yellow-400' : ''}`}
-          title="Tema oscuro"
-          onClick={() => setTheme('dark')}
-        >
-          🌙
-        </button>
-      </div>
+      {/* Botón de tema ahora está en el Header */}
       <Header />
       <main className="flex-1 py-8 px-4">
         <div className="max-w-4xl mx-auto space-y-8">

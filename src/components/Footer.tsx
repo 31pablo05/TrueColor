@@ -4,17 +4,14 @@ const Footer: React.FC = () => {
   const year = new Date().getFullYear();
   const version = 'v1.0.0';
   return (
-    <footer className="w-full py-8 bg-gradient-to-r from-indigo-700 via-purple-700 to-blue-700 text-white mt-auto shadow-2xl backdrop-blur-xl">
+  <footer className="w-full py-8 bg-gradient-to-r from-indigo-700 via-purple-700 to-blue-700 text-white mt-auto shadow-2xl backdrop-blur-xl animate-fade-in transition-all duration-700">
       <div className="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full animate-fade-in">
-          <div className="flex items-center gap-3 mb-2 md:mb-0">
-            <span className="text-2xl animate-fade-in" aria-label="Brillo">28</span>
-            <span className="text-lg font-bold tracking-wide animate-gradient-x bg-gradient-to-r from-blue-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              True Color
-            </span>
+  <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full animate-slide-right transition-all duration-700 delay-200">
+          <div className="flex items-center gap-3 mb-4 md:mb-0 animate-zoom-in transition-all duration-700 delay-300">
+            <img src="/svg logo/4.svg" alt="Logo TrueColor" className="h-20 w-20 md:h-24 md:w-24 drop-shadow-xl transition-all duration-700" />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-200">Creado con <span className="animate-pulse text-pink-400">💗</span> por</span>
+          <div className="flex flex-col md:flex-row items-center gap-2 animate-slide-right transition-all duration-700 delay-500">
+            <span className="text-sm text-gray-200">Creado con <span className="text-pink-400">💗</span> por</span>
             <a
               href="https://devcraftpablo.online/"
               target="_blank"
@@ -25,12 +22,12 @@ const Footer: React.FC = () => {
               Pablo Proboste
             </a>
           </div>
-          <div className="flex gap-4 mt-2 md:mt-0">
+          <div className="flex flex-wrap gap-4 mt-2 md:mt-0 justify-center animate-slide-right transition-all duration-700 delay-700">
             <a
               href="https://devcraftpablo.online/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1"
+              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1 animate-fade-in"
               title="Web personal"
               aria-label="Web personal"
             >
@@ -40,7 +37,7 @@ const Footer: React.FC = () => {
               href="https://github.com/31pablo05"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1"
+              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1 animate-fade-in"
               title="GitHub"
               aria-label="GitHub"
             >
@@ -48,7 +45,7 @@ const Footer: React.FC = () => {
             </a>
             <a
               href="mailto:contacto@devcraftpablo.online"
-              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1"
+              className="text-blue-200 hover:text-blue-300 text-lg transition-colors duration-200 flex items-center gap-1 animate-fade-in"
               title="Email"
               aria-label="Email"
             >
@@ -56,7 +53,7 @@ const Footer: React.FC = () => {
             </a>
           </div>
         </div>
-        <div className="mt-4 text-xs text-gray-300 text-center">
+  <div className="mt-4 text-xs text-gray-300 text-center animate-fade-in transition-all duration-700 delay-1000">
           &copy; {year} True Color. Todos los derechos reservados. <span className="ml-2">{version}</span>
         </div>
       </div>

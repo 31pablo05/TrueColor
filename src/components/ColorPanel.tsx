@@ -102,22 +102,7 @@ const ColorPanel: React.FC<ColorPanelProps> = ({ hex, rgb, hsl, onCopy }) => {
       )}
 
       {/* Controles avanzados */}
-      <div className="mt-8 flex flex-wrap gap-4 justify-center">
-        <button
-          className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 font-semibold shadow hover:bg-blue-200 transition-all duration-200"
-          title="Ajustar tono (próximamente)"
-          disabled
-        >
-          Ajustar tono
-        </button>
-        <button
-          className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 font-semibold shadow hover:bg-blue-200 transition-all duration-200"
-          title="Ver sugerencias de accesibilidad (próximamente)"
-          disabled
-        >
-          Accesibilidad
-        </button>
-      </div>
+      {/* ...botones avanzados eliminados... */}
 
       {/* Info adicional */}
       <div className="mt-6 p-4 bg-blue-50 rounded-xl">
