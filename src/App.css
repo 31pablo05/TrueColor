@@ -171,6 +171,27 @@ canvas:hover {
   animation: fade-in 0.8s ease-out;
 }
 
+/* CanvasPicker animations (moved from component-scoped styles) */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fade-in-short {
+  from {
+    opacity: 0;
+    transform: translateY(10px) translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+.animate-fade-in-short {
+  animation: fade-in-short 0.3s ease-out;
+}
+
 /* ===== ESTILOS PARA TIP INICIAL MEJORADO ===== */
 
 .tip-container {

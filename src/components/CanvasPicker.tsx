@@ -392,31 +392,7 @@ const CanvasPicker: React.FC<CanvasPickerProps> = ({
         </div>
       )}
       
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-        
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px) translateX(-50%);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) translateX(-50%);
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
+      {/* Styles for animations moved to src/App.css to keep styling centralized */}
     </div>
   );
 };
