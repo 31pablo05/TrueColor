@@ -24,14 +24,14 @@ const ColorPanel: React.FC<ColorPanelProps> = ({ hex, rgb, hsl, onCopy }) => {
 
   const ColorValue: React.FC<{ label: string; value: string; format: string }> = ({ label, value, format }) => (
     <div className="group">
-      <div className="flex items-center justify-between p-4 bg-white/60 backdrop-blur-xl rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg border border-gray-100">
-        <div className="flex-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-white/60 backdrop-blur-xl rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg border border-gray-100 gap-3">
+        <div className="flex-1 w-full">
           <div className="text-sm font-medium text-gray-600 mb-1">{label}</div>
-          <div className="font-mono text-lg text-gray-900 select-all">{value}</div>
+          <div className="font-mono text-lg text-gray-900 select-all break-words">{value}</div>
         </div>
         <button
           onClick={() => handleCopy(value, format)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
+          className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
             copiedValue === format
               ? 'bg-green-500 text-white animate-pop'
               : 'bg-blue-500 hover:bg-blue-600 text-white'

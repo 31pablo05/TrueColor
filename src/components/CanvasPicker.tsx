@@ -91,7 +91,7 @@ const CanvasPicker: React.FC<CanvasPickerProps> = ({ image, onColorPick }) => {
   }
 
   return (
-  <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-xl border border-gray-100 animate-slide-up">
+  <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-xl border border-gray-100 animate-slide-up">
       <div className="text-center mb-4">
         <h3 className="text-xl font-semibold text-gray-800 mb-2">🎯 Selector de Color</h3>
         <p className="text-gray-600">Haz clic en cualquier píxel de la imagen para extraer su color</p>
@@ -110,14 +110,14 @@ const CanvasPicker: React.FC<CanvasPickerProps> = ({ image, onColorPick }) => {
         {/* Zoom controls */}
         <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
           <button
-            className="bg-blue-500 text-white rounded-full p-2 shadow hover:bg-blue-600 transition-colors duration-200"
+            className="bg-blue-500 text-white rounded-full p-1 sm:p-2 shadow hover:bg-blue-600 transition-colors duration-200"
             onClick={() => setZoom(z => Math.min(z + 0.2, 3))}
             title="Acercar"
           >
             +
           </button>
           <button
-            className="bg-blue-500 text-white rounded-full p-2 shadow hover:bg-blue-600 transition-colors duration-200"
+            className="bg-blue-500 text-white rounded-full p-1 sm:p-2 shadow hover:bg-blue-600 transition-colors duration-200"
             onClick={() => setZoom(z => Math.max(z - 0.2, 1))}
             title="Alejar"
           >

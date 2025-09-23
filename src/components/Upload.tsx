@@ -83,7 +83,7 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
   };
 
   return (
-  <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-2xl shadow-xl border border-gray-100 animate-slide-up">
+  <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-xl border border-gray-100 animate-slide-up">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">Sube tu imagen</h2>
         <p className="text-gray-600">Arrastra una imagen, selecciona un archivo o pega una URL</p>
@@ -94,7 +94,7 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
       
       {/* Drag & Drop Area */}
       <div
-        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
+        className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all duration-300 ${
           dragOver 
             ? 'border-blue-500 bg-blue-50 animate-pulse-slow' 
             : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
@@ -110,9 +110,9 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
         </div>
         {preview && (
           <div className="mb-4 flex flex-col items-center">
-            <img src={preview} alt="Preview" className="max-h-48 rounded-xl shadow-lg border-2 border-blue-200 animate-fade-in" />
+            <img src={preview} alt="Preview" className="max-h-40 sm:max-h-48 rounded-xl shadow-lg border-2 border-blue-200 animate-fade-in" />
             <button
-              className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors duration-200 animate-pulse-slow"
+              className="mt-2 w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors duration-200"
               onClick={() => {
                 const img = new window.Image();
                 img.src = preview;
@@ -135,7 +135,7 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
         
         <label 
           htmlFor="file-upload"
-          className="cursor-pointer inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+          className="cursor-pointer inline-flex w-full sm:w-auto justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
         >
           📂 Seleccionar archivo
         </label>
@@ -145,7 +145,7 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
 
       {/* URL Input */}
       <div className="mt-6">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             ref={urlInputRef}
             type="text"
@@ -154,7 +154,7 @@ const Upload: React.FC<UploadProps> = ({ onImageLoad }) => {
           />
           <button
             onClick={handleUrlPaste}
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium"
+            className="w-full sm:w-auto px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium"
           >
             🔗 Cargar URL
           </button>

@@ -18,7 +18,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({ colors, onSelect }) => {
   };
   if (colors.length === 0) {
     return (
-      <div className="w-full max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 animate-fade-in">
+      <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 animate-fade-in">
         <div className="text-center">
           <h3 className="text-xl font-semibold text-gray-800 mb-2">📚 Historial de Colores</h3>
           <p className="text-gray-500">Los colores que selecciones aparecerán aquí</p>
@@ -28,7 +28,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({ colors, onSelect }) => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 animate-slide-up">
+    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 animate-slide-up">
       <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
         <div className="text-center flex-1">
           <h3 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2 justify-center">
@@ -49,7 +49,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({ colors, onSelect }) => {
           {colors.map((color, idx) => (
             <div key={idx} className="relative group animate-fade-in">
               <button
-                className="w-12 h-12 rounded-xl shadow-md border-2 border-white hover:border-blue-400 hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-14 h-14 sm:w-12 sm:h-12 rounded-xl shadow-md border-2 border-white hover:border-blue-400 hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 style={{ background: color }}
                 onClick={() => onSelect(color)}
                 title={color}

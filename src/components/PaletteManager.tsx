@@ -145,7 +145,7 @@ const PaletteManager: React.FC<PaletteManagerProps> = ({ currentColors = [] }) =
                   </h4>
                   <p className="text-xs text-gray-500">Creada el {palette.createdAt}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => copyPalette(palette.colors)}
                     className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition-all duration-200"
@@ -165,11 +165,11 @@ const PaletteManager: React.FC<PaletteManagerProps> = ({ currentColors = [] }) =
                 </div>
               </div>
               {/* Scroll horizontal en mobile */}
-              <div className="flex gap-2 flex-wrap overflow-x-auto pb-2">
+              <div className="flex gap-3 flex-wrap overflow-x-auto pb-2">
                 {palette.colors.map((color: string, colorIdx: number) => (
                   <button
                     key={colorIdx}
-                    className="w-8 h-8 rounded-lg shadow-sm border-2 border-white cursor-pointer hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg shadow-sm border-2 border-white cursor-pointer hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     style={{ background: color }}
                     title={color}
                     aria-label={`Copiar color ${color}`}
